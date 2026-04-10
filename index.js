@@ -15,6 +15,8 @@ const openai = new OpenAI({
 
 app.post("/chat", async (req, res) => {
   try {
+    console.log("BODY:", req.body); // 👈 DEBUG
+
     const message = req.body.message;
 
     const completion = await openai.chat.completions.create({
@@ -22,8 +24,7 @@ app.post("/chat", async (req, res) => {
       messages: [
         {
           role: "system",
-          content:
-            "Eres un asistente financiero. Detectas gastos, categorías y das consejos claros y cortos.",
+          content: "Eres un asistente financiero.",
         },
         { role: "user", content: message },
       ],
@@ -32,14 +33,13 @@ app.post("/chat", async (req, res) => {
     res.json({
       reply: completion.choices[0].message.content,
     });
+
   } catch (error) {
-    console.error(error);
+    console.log("ERROR REAL:", error); // 👈 CLAVE
     res.status(500).json({ error: "Error en IA" });
   }
 });
 
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () =>
-  console.log("Servidor en puerto", PORT)
-);
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Servidor activo");
+});
